@@ -3,10 +3,10 @@ import { createContext, useState, useEffect } from "react";
 export const ProjectContext = createContext();
 
 // useLocalStorage
-const useLocalStorage = (key, defautValue) => {
+const useLocalStorage = (key, defaultValue) => {
   const [state, setState] = useState(() => {
     const savedData = localStorage.getItem(key);
-    return savedData ? JSON.parse(savedData) : defautValue;
+    return savedData ? JSON.parse(savedData) : defaultValue;
   });
 
   useEffect(() => {
@@ -117,6 +117,11 @@ export const ProjectContextProvider = ({ children }) => {
     { id: 11, taskId: 1, text: "ممتاز، بانتظار التحديث التالي" },
   ]);
 
+// 7. Modal 
+const [isModalOpen, setIsModalOpen]=useState(false);
+
+const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   // Derived States (Counters)
   const totalTasksCount = tasks.length;
@@ -133,7 +138,7 @@ export const ProjectContextProvider = ({ children }) => {
 
   const addProject = (newProjectsData) => {
     const newProject = {
-      id: Date.now(),
+      id: Date.now() + Math.floor(Math.random() * 1000),
       ...newProjectsData,
     };
     setProjects((prevProjects) => [...prevProjects, newProject]);
@@ -210,7 +215,13 @@ export const ProjectContextProvider = ({ children }) => {
         projectColors,
         calculateDayLaft,
         taskDates,
-        setTaskDates
+        setTaskDates,
+      isModalOpen,
+       openModal,
+       closeModal,
+       setIsModalOpen,
+       selectedColor,
+       setSelectedColor,
       }}
     >
       {children}
