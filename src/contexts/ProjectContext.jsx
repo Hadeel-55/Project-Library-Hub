@@ -101,7 +101,7 @@ const taskLifecycle = ["pending", "implementTasks", "complete"];
       taskTitle: "مشروع شركه طيران",
       description: "بناء مشروع لشركه طيران",
       levelTask: "عالي",
-      taskDate: "2026-06-20",
+      taskDate: "2026-06-25",
       status: "pending",
       comment:"إضافة ملف جديد"
     },
@@ -111,7 +111,7 @@ const taskLifecycle = ["pending", "implementTasks", "complete"];
       taskTitle: "مشروع شركه سيارات",
       description: "بناء مشروع لشركه سيارات",
       levelTask: "منخفض",
-      taskDate: "2026-06-22",
+      taskDate: "2026-06-30",
       status: "pending",
      comment:"إضافة ملف جديد2"
     },

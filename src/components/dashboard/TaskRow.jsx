@@ -15,7 +15,7 @@ const TaskRow = ({ title, status, projectName, date ,daysLeft }) => {
   };
 
   return (
-    <div className="d-flex justify-content-between border-1 p-2 align-items-center" style={{boxShadow:'1px 1px 2px ',fontSize:'14px'}}>
+    <div className="d-flex justify-content-between p-2 align-items-center card-lift" style={{fontSize:'14px', borderBottom:'1px solid #0000003f'}}>
       <div >
         <h6>{title}</h6>
         <div className="text-secondary d-flex gap-1">

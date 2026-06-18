@@ -28,7 +28,7 @@ const ProjectCard = ({
   return (
     <Card
       className="p-3 "
-      style={{ borderTop: `5px solid ${projectColor}`, borderRadius: "20px" }}
+      style={{ borderTop: `5px solid ${projectColor}`, borderRadius: "20px", cursor:'pointer' }}
     >
       <div className="d-flex justify-content-between align-items-center">
         <h5>{title}</h5>
