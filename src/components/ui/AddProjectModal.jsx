@@ -6,8 +6,8 @@ import Select from "react-select";
 
 const AddProjectModal = () => {
   const {
-    isModalOpen,
-    closeModal,
+    isProjectModalOpen,
+    closeProjectModal,
     addProject,
     projectColors,
     selectedColor,
@@ -34,7 +34,7 @@ const AddProjectModal = () => {
 
     setProjectName("");
     setProjectDesc("");
-    closeModal();
+    closeProjectModal();
   };
 
   const customOption = (props) => {
@@ -67,8 +67,8 @@ const AddProjectModal = () => {
 
   return (
     <CustomModal
-      isOpen={isModalOpen}
-      onClose={closeModal}
+      isOpen={isProjectModalOpen}
+      onClose={closeProjectModal}
       title={"اضافة مشروع جديد"}
     >
       <Form onSubmit={handleSubmit}>
@@ -112,7 +112,7 @@ const AddProjectModal = () => {
             onClick={() => {
               setProjectName("");
               setProjectDesc("");
-              closeModal();
+              closeProjectModal();
             }}
           >
             إلغاء

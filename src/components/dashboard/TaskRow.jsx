@@ -9,7 +9,7 @@ const TaskRow = ({ title, status, projectName, date ,daysLeft }) => {
         return "warning";
       case "منخفض":
         return "info";
-      default:
+      default: 
         return "secondary";
     }
   };

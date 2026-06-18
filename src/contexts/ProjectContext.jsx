@@ -5,12 +5,23 @@ export const ProjectContext = createContext();
 // useLocalStorage
 const useLocalStorage = (key, defaultValue) => {
   const [state, setState] = useState(() => {
-    const savedData = localStorage.getItem(key);
-    return savedData ? JSON.parse(savedData) : defaultValue;
+    try{
+  const savedData = localStorage.getItem(key);
+   return savedData ? JSON.parse(savedData) : defaultValue;
+
+    }catch(erroe){
+      console.error('Enter reading localStorage key:', key , error);
+      return defaultValue;
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
+    try{
+  localStorage.setItem(key, JSON.stringify(state));
+    }catch(error){
+            console.error('Enter reading localStorage key:', key , error);
+    }
+  
   }, [key, state]);
   return [state, setState];
 };
@@ -58,7 +69,8 @@ export const ProjectContextProvider = ({ children }) => {
   const tasksStatas = ["complete", "implementTasks", "totalTasks"];
   //  3. Date State
   const [taskDates, setTaskDates] = useState("");
-
+// 
+const taskLifecycle = ["pending", "implementTasks", "complete"];
 
   
   // calculate Day
@@ -90,7 +102,8 @@ export const ProjectContextProvider = ({ children }) => {
       description: "بناء مشروع لشركه طيران",
       levelTask: "عالي",
       taskDate: "2026-06-20",
-      status: "implementTasks",
+      status: "pending",
+      comment:"إضافة ملف جديد"
     },
     {
       id: 2,
@@ -99,8 +112,8 @@ export const ProjectContextProvider = ({ children }) => {
       description: "بناء مشروع لشركه سيارات",
       levelTask: "منخفض",
       taskDate: "2026-06-22",
-      status: "complete",
-     
+      status: "pending",
+     comment:"إضافة ملف جديد2"
     },
   ]);
 
@@ -112,20 +125,37 @@ export const ProjectContextProvider = ({ children }) => {
   ]);
 
   // 6. Comments State
-  const [comments, setCommentes] = useLocalStorage("comments", [
-    { id: 10, taskId: 1, text: "لقد بدأت في برمجة الواجهة" },
-    { id: 11, taskId: 1, text: "ممتاز، بانتظار التحديث التالي" },
+  const [comments, setComments] = useLocalStorage("comments", [
+    { id: 1, taskId: 1, text: "لقد بدأت في برمجة الواجهة" },
+    { id: 2, taskId: 2, text: "ممتاز، بانتظار التحديث التالي" },
   ]);
 
 // 7. Modal 
-const [isModalOpen, setIsModalOpen]=useState(false);
+const [isProjectModalOpen, setIsProjectModalOpen]=useState(false);
 
-const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+const openProjectModal = () => setIsProjectModalOpen(true);
+  const closeProjectModal = () => setIsProjectModalOpen(false);
+
+// 8. taskModal
+const [isTaskOpenModal,setIsTaskOpenModal ]=useState(false);
+const openTaskModal =()=>setIsTaskOpenModal(true);
+const closeTaskModal=()=>setIsTaskOpenModal(false);
+
+// 9. Comment MOdal
+
+const[isCommentModal ,setIsCommentModal]=useState(null);
+const openCommentModal=()=>setIsCommentModal(true);
+const closeCommentModal=()=>setIsCommentModal(null);
+
+
+// File State
+const [files, setFiles]=useLocalStorage('files',[
+
+])
 
   // Derived States (Counters)
   const totalTasksCount = tasks.length;
-
+const pendingTasksCount = tasks.filter((task) => task.status === "pending").length;
   const completedTasksCount = tasks.filter(
     (task) => task.status === "complete",
   ).length;
@@ -136,39 +166,96 @@ const openModal = () => setIsModalOpen(true);
 
   // --- Functions ---
 
+// 1. add project
   const addProject = (newProjectsData) => {
-    const newProject = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      ...newProjectsData,
-    };
-    setProjects((prevProjects) => [...prevProjects, newProject]);
+    setProjects((prevProjects) => {
+      const newProject = {
+        id: `project-${Date.now()}-${prevProjects.length}-${Math.floor(Math.random() * 10000)}`,
+        ...newProjectsData,
+      };
+      return [...prevProjects, newProject];
+    });
   };
 
+  // 2. add task
   const addTask = (newTasksData, projectId) => {
-    const newTasks = {
-      id: Date.now(),
-      projectId: projectId,
-      ...newTasksData,
-    };
-    setTasks((prevTasks) => [...prevTasks, newTasks]);
+    setTasks((prevTasks) => {
+      const newTasks = {
+        id: `task-${Date.now()}-${prevTasks.length}-${Math.floor(Math.random() * 10000)}`,
+        projectId: projectId,
+        status: "pending",
+        ...newTasksData,
+        
+      };
+      return [...prevTasks, newTasks];
+    });
   };
 
+// Next status
+
+const moveTaskToNextStatus =(taskId)=>{
+
+  setTasks((prevTasks)=>
+  prevTasks.map((task)=>{
+    if(task.id === taskId){
+      const currentIndex =taskLifecycle.indexOf(task.status);
+
+      if(currentIndex !== -1 && currentIndex < taskLifecycle.length -1){
+        return{
+          ...task,
+          status:taskLifecycle[currentIndex + 1]
+        };
+      }
+    }
+    return task;
+  })
+)
+}
+
+
+  // 3. add member
   const addMember = (newMemberData) => {
     const isExsit = team.some((member) => member.name === newMemberData.name);
     if (isExsit) {
-      return;
+      return; 
     }
-    const newMember = {
-      id: Date.now(),
-      ...newMemberData,
-    };
-    setTeam((prevTeam) => [...prevTeam, newMember]);
+    
+    setTeam((prevTeam) => {
+      const newMember = {
+        id: `member-${Date.now()}-${prevTeam.length}-${Math.floor(Math.random() * 10000)}`,
+        ...newMemberData,
+      };
+      return [...prevTeam, newMember];
+    });
   };
+
+  // 4. add comment
+  const addComment = (newCommentData) => {
+    setComments((prevComments) => {
+      const newComment = {
+        id: `comment-${Date.now()}-${prevComments.length}-${Math.floor(Math.random() * 10000)}`,
+        ...newCommentData,
+      };
+      return [...prevComments, newComment];
+    });
+  };
+
+  // add files
+
+  const addFile=(newFileData)=>{
+    setFiles((prevFiles)=>{
+      const newFile ={
+        id:`file-${Date.now()}-${prevFiles.length}-${Math.floor(Math.random()* 10000)}`,
+        ...newFileData
+      };
+      return[...prevFiles, newFile]
+    })
+  }
 
   const deletTask = (taskId) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
 
-    setCommentes((prevComments) =>
+    setComments((prevComments) =>
       prevComments.filter((comment) => comment.taskId !== taskId),
     );
   };
@@ -182,13 +269,6 @@ const openModal = () => setIsModalOpen(true);
     );
   };
 
-  const addComment = (newCommentData) => {
-    const newComment = {
-      id: Date.now(),
-      ...newCommentData,
-    };
-    setCommentes((prevComments) => [...prevComments, newComment]);
-  };
 
   return (
     <ProjectContext.Provider
@@ -200,7 +280,7 @@ const openModal = () => setIsModalOpen(true);
         team,
         setTeam,
         comments,
-        setCommentes,
+        setComments,
         totalTasksCount,
         completedTasksCount,
         implementTasksCount,
@@ -216,12 +296,25 @@ const openModal = () => setIsModalOpen(true);
         calculateDayLaft,
         taskDates,
         setTaskDates,
-      isModalOpen,
-       openModal,
-       closeModal,
-       setIsModalOpen,
+      isProjectModalOpen,
+       openProjectModal,
+       closeProjectModal,
+       setIsProjectModalOpen,
        selectedColor,
        setSelectedColor,
+       closeTaskModal,
+       openTaskModal,
+       isTaskOpenModal,
+       setIsTaskOpenModal,
+       openCommentModal,
+       setIsCommentModal,
+       closeCommentModal,
+       isCommentModal,
+       addFile,
+       files,
+        setFiles,
+        taskLifecycle,
+        moveTaskToNextStatus
       }}
     >
       {children}

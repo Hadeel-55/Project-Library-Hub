@@ -11,6 +11,7 @@ const ProjectCard = ({
   members = [],
   projectColor,
   onDelete,
+  id,
 }) => {
   const { team: allTeamMember } = useContext(ProjectContext);
 
@@ -84,7 +85,7 @@ const ProjectCard = ({
           })
         )}
       </div>
-      <Link className="mt-3 text-decoration-none" style={{fontSize:'14px'}}>عرض التفاصيل</Link>
+      <Link to={`/projects/${id}`} className="mt-3 text-decoration-none" style={{fontSize:'14px'}}>عرض التفاصيل</Link>
     </Card>
   );
 };
