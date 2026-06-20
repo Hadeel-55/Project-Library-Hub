@@ -177,25 +177,63 @@ export const LibraryContextProvider = ({ children }) => {
 
   // add Review
 
-  const addReview = (newReviewData, bookId) => {
-    setLibrary((prevLibrary) => {
-      const newReview = {
-        id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
-        ...newReviewData,
-        date: Date.now(),
-      };
+  // const addReview = (newReviewData, bookId) => {
+  //   setLibrary((prevLibrary) => {
+  //     const newReview = {
+  //       id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
+  //       ...newReviewData,
+  //       date: Date.now(),
+  //     };
 
+  //     return prevLibrary.map((book) => {
+  //       if (book.id === bookId) {
+  //         return {
+  //           ...book,
+  //           reviews: [...book.reviews, newReview],
+  //         };
+  //       }
+  //       return book;
+  //     });
+  //   });
+  // };
+  const addReview = (newReviewData, bookId) => {
+      setLibrary((prevLibrary) => {
+    const newReview = {
+      id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
+      ...newReviewData,
+      date: new Date().toDateString(),
+    };
+  
       return prevLibrary.map((book) => {
         if (book.id === bookId) {
+          const updateReviews = [...book.reviews, newReview];
+
+          const totalRating = updateReviews.reduce(
+            (sum, rev) => sum + Number(rev.rating),
+            0,
+          );
+          const averageRating = totalRating / updateReviews.length;
+
           return {
             ...book,
-            reviews: [...book.reviews, newReview],
+            reviews: updateReviews,
+            rating: Number(averageRating.toFixed(1)),
           };
         }
         return book;
       });
     });
   };
+
+  // custumModals
+  // add book Modal
+  const [isOpenAddBookModal, setIsopenAddBookModal] = useState(null);
+  const openAddBookModal = () => setIsopenAddBookModal(true);
+  const closeAddBookModal = () => setIsopenAddBookModal(null);
+  // add review Modal
+  const [isOpenReviewModal, setIsopenReviewModal] = useState(null);
+  const openReviewModal = () => setIsopenReviewModal(true);
+  const closeReviewModal = () => setIsopenReviewModal(null);
 
   return (
     <LibraryContext.Provider
@@ -214,6 +252,13 @@ export const LibraryContextProvider = ({ children }) => {
         addAuthor,
         addBook,
         addReview,
+        isOpenAddBookModal,
+        openAddBookModal,
+        closeAddBookModal,
+        isOpenReviewModal,
+        openReviewModal,
+        closeReviewModal,
+        setIsopenAddBookModal,
       }}
     >
       {children}
