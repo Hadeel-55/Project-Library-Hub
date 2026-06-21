@@ -2,7 +2,9 @@ import { useContext } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { LibraryContext } from "../contexts/LibraryContext";
 import AddBookModal from '../components/ui/AddBookModal';
-const LivraryView = () => {
+import FilterBar from '../components/library/FilterBar';
+import BookGrid from '../components/library/BookGrid';
+const LibraryView = () => {
   const { setIsopenAddBookModal } = useContext(LibraryContext);
   return (
     <Container className="mt-5">
@@ -16,7 +18,9 @@ const LivraryView = () => {
         </Button>
       </div>
       <AddBookModal/>
+      <FilterBar/>
+      <BookGrid/>
     </Container>
   );
 };
-export default LivraryView;
+export default LibraryView;

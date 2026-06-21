@@ -87,16 +87,16 @@ export const LibraryContextProvider = ({ children }) => {
 
   /// Filters ///
   // searchQuery
-  const handleSearchQuery = (e) => {
-    setSearchQuery(e.target.value);
+  const handleSearchQuery = (value) => {
+    setSearchQuery(value);
   };
   //  selectedCategory
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
+  const handleCategoryChange = (selecedOption) => {
+    setSelectedCategory(selecedOption ? selecedOption.name : 'جميع التصنيفات');
   };
   //  selectedAuthor
-  const handleAuthorChange = (e) => {
-    setSelectedAuthor(e.target.value);
+  const handleAuthorChange = (selecedOption) => {
+    setSelectedAuthor(selecedOption ? selecedOption :'جميع المؤلفين');
   };
 
   // filteredBooks
@@ -177,25 +177,6 @@ export const LibraryContextProvider = ({ children }) => {
 
   // add Review
 
-  // const addReview = (newReviewData, bookId) => {
-  //   setLibrary((prevLibrary) => {
-  //     const newReview = {
-  //       id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
-  //       ...newReviewData,
-  //       date: Date.now(),
-  //     };
-
-  //     return prevLibrary.map((book) => {
-  //       if (book.id === bookId) {
-  //         return {
-  //           ...book,
-  //           reviews: [...book.reviews, newReview],
-  //         };
-  //       }
-  //       return book;
-  //     });
-  //   });
-  // };
   const addReview = (newReviewData, bookId) => {
       setLibrary((prevLibrary) => {
     const newReview = {

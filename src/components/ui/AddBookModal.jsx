@@ -15,15 +15,21 @@ const AddBookModal = () => {
   const [descripton, setDescripton] = useState("");
 
   const handleFromSubmit = (e) => {
-    e.preventDault();
+    e.preventDefault();
 
-    const newBookData = {
-      title,
+     addBook({
+   title,
       author: bookAuthor,
       category: selectCat ? selectCat.name : "",
       date: date || new Date().toISOString().split("T")[0],
       descripton,
-    };
+     })
+
+     closeAddBookModal();
+     setBookAuthor('');
+     setSelectCat('');
+     setDescripton('');
+     setDate('');
   };
 
   const handleCloseAndRest = () => {
@@ -37,18 +43,21 @@ const AddBookModal = () => {
   };
 
   const optionCustum = (props) => {
-    const { data, innerRef, innerProps } = props;
+    const { data, innerRef, innerProps ,isFocused,} = props;
     return (
       <div
         ref={innerRef}
         {...innerProps}
-        className="d-flex align-items-center p-2 gap-2 cursor-pointer"
+     className={`d-flex align-items-center p-2 gap-2 ${
+        isFocused ? "bg-light" : ""
+      }`}
+        style={{cursor:'pointer'}}
       >
         <span
           style={{
-            backgroundColor: data.value || "#7b2cbf",
-            width: "12px",
-            height: "12px",
+           backgroundColor :data.value || '#000000a8',
+            width: "8px",
+            height: "8px",
             borderRadius: "50%",
             display: "inline-block",
           }}
