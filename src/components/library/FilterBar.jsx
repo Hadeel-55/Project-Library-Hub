@@ -1,6 +1,6 @@
 import { Form, Row, Col } from "react-bootstrap";
 import { LibraryContext } from "../../contexts/LibraryContext";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Select from "react-select";
 
 const FilterBar = () => {
@@ -11,11 +11,13 @@ const FilterBar = () => {
     handleSearchQuery,
     searchQuery,
     setSearchQuery,
+    handleCategoryChange,
+    handleAuthorChange,
+    library,
   } = useContext(LibraryContext);
 
-  const [cat, setCat] = useState("");
-  const [auth, setAuthor] = useState("");
-
+ const currentCategory =category.find(c=>c.name === useContext(LibraryContext).selectedCategory)|| null;
+const currentAuthor =author.find(a=>a.name === useContext(LibraryContext).selectedAuthor) || null;
   const optionCustom = (props) => {
     const { data, innerRef, innerProps, isFocused } = props;
     return (
@@ -70,22 +72,23 @@ const FilterBar = () => {
       </Col>
       <Col md={4}>
         <Select
-          onChange={(e) => setCat(e)}
+          onChange={(e) => handleCategoryChange(e)}
           placeholder="جميع التصنيفات"
           options={category}
-          value={cat}
+          value={currentCategory}
           components={{ Option: optionCustom }}
           getOptionLabel={(choise) => choise.name}
           getOptionValue={(choise) => choise.id}
           isClearable
+          
         ></Select>
       </Col>
       <Col md={4}>
         <Select
-          onChange={(e) => setAuthor(e)}
+          onChange={(e) => handleAuthorChange(e)}
           placeholder="جميع المؤلفين"
           options={author}
-          value={auth}
+          value={currentAuthor}
           components={{ Option: optionCustom }}
           getOptionLabel={(choise) => choise.name}
           getOptionValue={(choise) => choise.id}

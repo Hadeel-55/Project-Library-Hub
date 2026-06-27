@@ -20,14 +20,14 @@ const AddReviewModal = ({ bookId, bookTitle }) => {
       comment: comment,
       rating: Number(rating),
     };
-    addReview(newReviwData,bookId);
+    addReview(newReviwData, bookId);
     handleCloseReview();
   };
 
   const handleCloseReview = () => {
     setComment("");
     setUserName("");
-    setRating(5);
+    setRating(0);
     closeReviewModal();
   };
 
@@ -56,7 +56,7 @@ const AddReviewModal = ({ bookId, bookTitle }) => {
           <Form.Label>
             التقييم : <span className="text-warning fw-bold">{rating}</span>
           </Form.Label>
-          <div style={{ direction: "ltr" }}>
+          <div className="d-flex gap-1 fs-4 mb-2" style={{ cursor: "pointer" }}>
             {[...Array(5)].map((_, index) => {
               const starValue = index + 1;
               return (
@@ -81,6 +81,7 @@ const AddReviewModal = ({ bookId, bookTitle }) => {
           placeholder="تعليقك"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          className="mt-3"
         />
         <div className="d-flex justify-content-end gap-2 mt-4">
           <Button type="submit">إضافة</Button>

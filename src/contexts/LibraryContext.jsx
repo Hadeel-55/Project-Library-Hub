@@ -33,6 +33,7 @@ export const LibraryContextProvider = ({ children }) => {
       category: "تقنية",
       date: "2023-01-15",
       description: "كتاب شامل عن أساسيات البرمجة",
+      rating: 5,
       reviews: [
         {
           id: 101,
@@ -50,6 +51,7 @@ export const LibraryContextProvider = ({ children }) => {
       category: "علم نفس",
       date: "2023-04-28",
       description: "كتاب شامل عن علم النفس",
+      rating: 3.5,
       reviews: [
         {
           id: 102,
@@ -81,7 +83,7 @@ export const LibraryContextProvider = ({ children }) => {
     { id: "auth-1", name: "أحمد محمد" },
     { id: "auth-2", name: "فاطمة علي" },
     { id: "auth-3", name: "خالد أحمد" },
-    { id: "auth-4", name: "سارة محمد" },
+    { id: "auth-4", name: "هبة الاحمد" },
   ]);
   const [selectedAuthor, setSelectedAuthor] = useState("جميع المؤلفين");
 
@@ -92,19 +94,21 @@ export const LibraryContextProvider = ({ children }) => {
   };
   //  selectedCategory
   const handleCategoryChange = (selecedOption) => {
-    setSelectedCategory(selecedOption ? selecedOption.name : 'جميع التصنيفات');
+    setSelectedCategory(selecedOption ? selecedOption.name : "جميع التصنيفات");
   };
   //  selectedAuthor
   const handleAuthorChange = (selecedOption) => {
-    setSelectedAuthor(selecedOption ? selecedOption :'جميع المؤلفين');
+    setSelectedAuthor(selecedOption ? selecedOption.name : "جميع المؤلفين");
   };
 
   // filteredBooks
 
   const filteredBooks = library.filter((book) => {
     const matchesSearch =
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (book?.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (book?.description || book?.descripton || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
     const matchCategory =
       !selectedCategory ||
@@ -166,6 +170,7 @@ export const LibraryContextProvider = ({ children }) => {
         id: `book-${Date.now()}-${prevBooks.length}-${Math.floor(Math.random() * 1000)}`,
         ...newBookData,
         reviews: [],
+        rating: 0,
         date: new Date().toISOString().split("T")[0],
       };
       return [...prevBooks, newBook];
@@ -178,13 +183,13 @@ export const LibraryContextProvider = ({ children }) => {
   // add Review
 
   const addReview = (newReviewData, bookId) => {
-      setLibrary((prevLibrary) => {
-    const newReview = {
-      id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
-      ...newReviewData,
-      date: new Date().toDateString(),
-    };
-  
+    setLibrary((prevLibrary) => {
+      const newReview = {
+        id: `review-${Date.now()}-${prevLibrary.length}-${Math.floor(Math.random() * 1000)}`,
+        ...newReviewData,
+        date: new Date().toDateString(),
+      };
+
       return prevLibrary.map((book) => {
         if (book.id === bookId) {
           const updateReviews = [...book.reviews, newReview];
@@ -206,15 +211,47 @@ export const LibraryContextProvider = ({ children }) => {
     });
   };
 
+  // delet Book
+
+  const deletBook = (removeBook) => {
+    setLibrary(library.filter((i) => i.id !== removeBook));
+  };
+
+  // delet reviews
+  const deletReview = (bookId, reviewId) => {
+    setLibrary((prevLibrary) => {
+      return prevLibrary.map((book) => {
+        if (String(book.id) === String(bookId)) {
+          const updateReviws = book.reviews.filter(
+            (review) => String(review.id) !== String(reviewId),
+          );
+
+          const totalRating = updateReviws.reduce(
+            (sum, rev) => sum + Number(rev.rating),
+            0,
+          );
+          const averagRating =
+            updateReviws.length > 0 ? totalRating / updateReviws.length : 0;
+          return {
+            ...book,
+            reviews: updateReviws,
+            rating: Number(averagRating.toFixed(1)),
+          };
+        }
+        return book;
+      });
+    });
+  };
+
   // custumModals
   // add book Modal
   const [isOpenAddBookModal, setIsopenAddBookModal] = useState(null);
   const openAddBookModal = () => setIsopenAddBookModal(true);
   const closeAddBookModal = () => setIsopenAddBookModal(null);
   // add review Modal
-  const [isOpenReviewModal, setIsopenReviewModal] = useState(null);
+  const [isOpenReviewModal, setIsopenReviewModal] = useState(false);
   const openReviewModal = () => setIsopenReviewModal(true);
-  const closeReviewModal = () => setIsopenReviewModal(null);
+  const closeReviewModal = () => setIsopenReviewModal(false);
 
   return (
     <LibraryContext.Provider
@@ -240,6 +277,10 @@ export const LibraryContextProvider = ({ children }) => {
         openReviewModal,
         closeReviewModal,
         setIsopenAddBookModal,
+        setIsopenReviewModal,
+        isOpenReviewModal,
+        deletBook,
+        deletReview,
       }}
     >
       {children}

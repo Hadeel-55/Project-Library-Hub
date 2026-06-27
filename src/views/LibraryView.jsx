@@ -4,6 +4,8 @@ import { LibraryContext } from "../contexts/LibraryContext";
 import AddBookModal from '../components/ui/AddBookModal';
 import FilterBar from '../components/library/FilterBar';
 import BookGrid from '../components/library/BookGrid';
+import BookCard from '../components/library/BookCard';
+
 const LibraryView = () => {
   const { setIsopenAddBookModal } = useContext(LibraryContext);
   return (
@@ -20,6 +22,8 @@ const LibraryView = () => {
       <AddBookModal/>
       <FilterBar/>
       <BookGrid/>
+      <BookCard/>
+
     </Container>
   );
 };
